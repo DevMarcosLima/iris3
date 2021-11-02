@@ -47,7 +47,8 @@ class Cloudsql(Plugin):
     def __get_instance(self, project_id, name):
         try:
             result = (
-                self._google_client().instances()
+                self._google_client()
+                .instances()
                 .get(project=project_id, instance=name)
                 .execute()
             )
@@ -75,7 +76,8 @@ class Cloudsql(Plugin):
             while True:
 
                 response = (
-                    self._google_client().instances()
+                    self._google_client()
+                    .instances()
                     .list(
                         project=project_id,
                         pageToken=page_token,

@@ -9,9 +9,6 @@ from gce_base.gce_base import GceBase
 from util import gcp_utils
 
 
-
-
-
 class GceZonalBase(GceBase, metaclass=ABCMeta):
     def _gcp_zone(self, gcp_object):
         """Method dynamically called in generating labels, so don't change name"""
@@ -36,7 +33,7 @@ class GceZonalBase(GceBase, metaclass=ABCMeta):
         Get all available zones.
         """
         zones_client = compute_v1.ZonesClient()
-        project_id=gcp_utils.current_project_id()
+        project_id = gcp_utils.current_project_id()
         # NOTE! If different GCP Prpjects have different zones, this will break.
         # But the zone list is the same for all.
         request = compute_v1.ListZonesRequest(project=project_id)

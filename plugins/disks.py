@@ -35,7 +35,8 @@ class Disks(GceZonalBase):
         more_results = True
         while more_results:
             result = (
-                self._google_client().disks()
+                self._google_client()
+                .disks()
                 .list(
                     project=project_id,
                     zone=zone,
@@ -55,7 +56,8 @@ class Disks(GceZonalBase):
     def __get_disk(self, project_id, zone, name):
         try:
             result = (
-                self._google_client().disks()
+                self._google_client()
+                .disks()
                 .get(project=project_id, zone=zone, disk=name)
                 .execute()
             )
@@ -100,7 +102,9 @@ class Disks(GceZonalBase):
         zone = self._gcp_zone(gcp_object)
 
         self._batch.add(
-            self._google_client().disks().setLabels(
+            self._google_client()
+            .disks()
+            .setLabels(
                 project=project_id,
                 zone=zone,
                 resource=gcp_object["name"],

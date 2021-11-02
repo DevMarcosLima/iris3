@@ -54,7 +54,8 @@ class Buckets(Plugin):
             more_results = True
             while more_results:
                 response = (
-                    self._google_client().buckets()
+                    self._google_client()
+                    .buckets()
                     .list(
                         project=project_id,
                         pageToken=page_token,

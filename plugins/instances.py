@@ -88,7 +88,9 @@ class Instances(GceZonalBase):
 
         name = gcp_object["name"]
         self._batch.add(
-            self._google_client().instances().setLabels(
+            self._google_client()
+            .instances()
+            .setLabels(
                 project=project_id,
                 zone=zone,
                 instance=name,

@@ -97,18 +97,20 @@ def get_org(proj_name):
 
 def __create_folder_client():
     from google.cloud import resourcemanager_v3
+
     folders_client = resourcemanager_v3.FoldersClient()
     return folders_client
 
 
 def __create_project_client():
     from google.cloud import resourcemanager_v3
+
     projects_client = resourcemanager_v3.ProjectsClient()
     return projects_client
 
 
 @timed_lru_cache(maxsize=200, seconds=600)
 def get_project(project_id: str) -> Dict[str, Any]:
-    proj=__create_project_client().get_project(name=f"projects/{project_id}")
-    proj_as_dict = {"labels" : proj.labels}#This is the only key actually used
+    proj = __create_project_client().get_project(name=f"projects/{project_id}")
+    proj_as_dict = {"labels": proj.labels}  # This is the only key actually used
     return proj_as_dict
