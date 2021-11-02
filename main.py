@@ -17,30 +17,11 @@ from util.gcp_utils import detect_gae
 from util.config_utils import iris_prefix, is_project_enabled, get_config, pubsub_token
 from util.utils import init_logging, log_time, timing
 
-import googlecloudprofiler
+
 
 # Must init logging before any library code writes logs (which would overwide our config)
 
 init_logging()
-# If you set ENABLE_PROFILER to True, then edit requiremnts.txt and add a line to app.yaml as stated in requirements.txt
-ENABLE_PROFILER = False
-
-# Profiler initialization. It starts a daemon thread which continuously collects and uploads profiles.
-if detect_gae() and ENABLE_PROFILER:
-    try:
-        googlecloudprofiler.start()
-    except (ValueError, NotImplementedError) as exc:
-        localdev_error_msg = (
-            ". Profiler is not supported in local development"
-            if "Service name must be provided" in str(exc)
-            else ""
-        )
-
-        logging.info(
-            "Exception initializing the Cloud Profiler %s, %s", exc, localdev_error_msg
-        )
-else:
-    logging.info("Cloud Profiler not in use")
 
 gcp_utils.set_env()
 

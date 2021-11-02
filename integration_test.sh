@@ -154,12 +154,6 @@ if [[ $? -ne 0 ]]; then ERROR=1 ; fi
 gcloud compute snapshots describe "snapshot${RUN_ID}" "${DESCRIBE_FLAGS[@]}" | "${JQ[@]}"
 if [[ $? -ne 0 ]]; then ERROR=1 ; fi
 
-if [ $ERROR -ne 0 ];
-then
-  # On Error leave resources; do not delete them
-  trap - EXIT
-  # But still, revert the config
-  revert_config
-  exit $ERROR
-fi
+exit $ERROR
+
 
