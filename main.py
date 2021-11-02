@@ -18,7 +18,6 @@ from util.config_utils import iris_prefix, is_project_enabled, get_config, pubsu
 from util.utils import init_logging, log_time, timing
 
 
-
 # Must init logging before any library code writes logs (which would overwide our config)
 
 init_logging()
