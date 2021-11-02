@@ -110,6 +110,12 @@ def schedule():
             len(configured_projects),
             ", ".join(configured_projects),
         )
+        if not configured_projects:
+            raise Exception(
+                "No projects configured. This can happen when the config lists only projects"
+                "that are outside the current App Engine project. The config lists %s",
+                config_utils.enabled_projects(),
+            )
         msg_count = 0
         if not gcp_utils.detect_gae():
             max_project_in_localdev = 3

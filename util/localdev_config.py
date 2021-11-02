@@ -15,7 +15,8 @@ def __load_app_yaml():
 
 @functools.lru_cache
 def localdev_project_id():
-    if project_id := os.environ.get("IRIS_PROJECT"):
+    project_id = os.environ.get("IRIS_PROJECT")
+    if project_id:
         logging.info("Project %s (from env)", project_id)
         return project_id
     else:

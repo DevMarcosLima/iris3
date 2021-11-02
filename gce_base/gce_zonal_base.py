@@ -4,6 +4,12 @@ from abc import ABCMeta
 import util.gcp_utils
 from gce_base.gce_base import GceBase
 
+from google.cloud import compute_v1
+
+from util.utils import timed_lru_cache
+
+zones_client = compute_v1.ZonesClient()
+
 
 class GceZonalBase(GceBase, metaclass=ABCMeta):
     def _gcp_zone(self, gcp_object):
@@ -23,18 +29,22 @@ class GceZonalBase(GceBase, metaclass=ABCMeta):
             logging.exception(e)
             return None
 
+    @timed_lru_cache(maxsize=30, seconds=600)
     def _all_zones(self, project_id):
         """
         Get all available zones.
         """
-        response = self._google_client.zones().list(project=project_id).execute()
-        zones = [zone["description"] for zone in response["items"]]
-        return zones
+        request = compute_v1.ListZonesRequest(project=project_id)
+        zones = zones_client.list(request)
+        ret = [z.name for z in zones]
+        return ret
 
-    def block_labeling(self, gcp_object, original_labels):
-        # goog-gke-node appears in Nodes and Disks; and goog-gke-volume appears in Disks
+    def should_block_labeling(self, gcp_object, original_labels):
+        # We do not label GKE resources because lbeling a Node causes it to be re-created.
+        # Labeling a disk actually works OK, but we want to be consistent, and Google recommends against it.
+        # Label goog-gke-node appears in Nodes (VMs) and Disks; and goog-gke-volume appears in Disks.
+        # So you could refactor and split up this logic a bit.
         if "goog-gke-node" in original_labels or "goog-gke-volume" in original_labels:
-            # We do not label GKE resources.
             logging.info(
                 f"{self.__class__.__name__}, skip labeling GKE object {gcp_object.get('name')}"
             )

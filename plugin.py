@@ -95,7 +95,7 @@ class Plugin(object, metaclass=ABCMeta):
             )
 
     def do_batch(self):
-        """In do_label, we loop over all objects. But for efficienccy, we do not process
+        """In main#do_label, we loop over all objects. But for efficienccy, we do not process
         then all at once, but rather gather objects and process them in batches of
         self._BATCH_SIZE as we loop; then parse the remaining at the end of the loop"""
         try:
@@ -138,12 +138,15 @@ class Plugin(object, metaclass=ABCMeta):
             plugin_cls = cls_by_name(PLUGINS_MODULE + "." + name + "." + name.title())
             return plugin_cls
 
+        loaded = []
         for _, module, _ in pkgutil.iter_modules([PLUGINS_MODULE]):
             if config_utils.is_plugin_enabled(module):
                 plugin_class = load_plugin_class(module)
                 instance = plugin_class()
                 Plugin.plugins[plugin_class.__name__] = instance
+                loaded.append(plugin_class.__name__)
 
+        logging.info("Loaded  plugins: %s", loaded)
         assert Plugin.plugins, "No plugins defined"
 
     @staticmethod
@@ -161,7 +164,7 @@ class Plugin(object, metaclass=ABCMeta):
         )
         iris_labels = self.__iris_labels(gcp_object)
         all_labels = {**original_labels, **project_labels, **iris_labels}
-        if self.block_labeling(gcp_object, original_labels):
+        if self.should_block_labeling(gcp_object, original_labels):
             return None
         elif all_labels == original_labels:
             # Skip labeling  because no change
@@ -178,9 +181,9 @@ class Plugin(object, metaclass=ABCMeta):
         return self.__name(gcp_object, separator="/")
 
     def _name_no_separator(self, gcp_object):
-        return self.__name(gcp_object, separator="")
+        return self.__name(gcp_object, separator=None)
 
-    def __name(self, gcp_object, separator=""):
+    def __name(self, gcp_object, separator: typing.Optional[str]=None):
         try:
             name = gcp_object["name"]
             if separator:
@@ -198,5 +201,5 @@ class Plugin(object, metaclass=ABCMeta):
         )
 
     # Override and return True if this object must not be labeled (for example, GKE objects)
-    def block_labeling(self, block_labeling, original_labels):
+    def should_block_labeling(self, block_labeling, original_labels):
         return False
