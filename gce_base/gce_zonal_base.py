@@ -1,13 +1,15 @@
 import logging
 from abc import ABCMeta
+from functools import lru_cache
 
 from google.cloud import compute_v1
 
 import util.gcp_utils
 from gce_base.gce_base import GceBase
-from util.utils import timed_lru_cache
+from util import gcp_utils
 
-zones_client = compute_v1.ZonesClient()
+
+
 
 
 class GceZonalBase(GceBase, metaclass=ABCMeta):
@@ -28,11 +30,15 @@ class GceZonalBase(GceBase, metaclass=ABCMeta):
             logging.exception(e)
             return None
 
-    @timed_lru_cache(maxsize=30, seconds=600)
-    def _all_zones(self, project_id):
+    @lru_cache(maxsize=1)
+    def _all_zones(self):
         """
         Get all available zones.
         """
+        zones_client = compute_v1.ZonesClient()
+        project_id=gcp_utils.current_project_id()
+        # NOTE! If different GCP Prpjects have different zones, this will break.
+        # But the zone list is the same for all.
         request = compute_v1.ListZonesRequest(project=project_id)
         zones = zones_client.list(request)
         ret = [z.name for z in zones]

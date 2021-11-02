@@ -18,7 +18,7 @@ class Snapshots(GceBase):
 
         while more_results:
             result = (
-                self._google_client.snapshots()
+                self._google_client().snapshots()
                 .list(
                     project=project_id,
                     pageToken=page_token,
@@ -37,7 +37,7 @@ class Snapshots(GceBase):
     def __get_snapshot(self, project_id, name):
         try:
             result = (
-                self._google_client.snapshots()
+                self._google_client().snapshots()
                 .get(project=project_id, snapshot=name)
                 .execute()
             )
@@ -76,7 +76,7 @@ class Snapshots(GceBase):
         labels = self._build_labels(gcp_object, project_id)
 
         self._batch.add(
-            self._google_client.snapshots().setLabels(
+            self._google_client().snapshots().setLabels(
                 project=project_id, resource=gcp_object["name"], body=labels
             ),
             request_id=gcp_utils.generate_uuid(),

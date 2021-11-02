@@ -39,7 +39,7 @@ class Subscriptions(Plugin):
         assert self.__sub_path_regex.match(subscription_path)
         try:
             result = (
-                self._google_client.projects()
+                self._google_client().projects()
                 .subscriptions()
                 .get(
                     subscription=subscription_path,
@@ -59,7 +59,7 @@ class Subscriptions(Plugin):
         while True:
 
             result = (
-                self._google_client.projects()
+                self._google_client().projects()
                 .subscriptions()
                 .list(
                     project=f"projects/{project_id}",

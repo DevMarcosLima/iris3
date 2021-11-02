@@ -10,8 +10,6 @@ from util import gcp_utils
 from util.utils import log_time
 from util.utils import timing
 
-instances_client = compute_v1.InstancesClient()
-
 
 class Instances(GceZonalBase):
     def _gcp_instance_type(self, gcp_object: dict):
@@ -29,6 +27,7 @@ class Instances(GceZonalBase):
         return ["compute.instances.insert", "compute.instances.start"]
 
     def __list_instances(self, project_id: str, zone: str):
+        instances_client = compute_v1.InstancesClient()
         request = compute_v1.ListInstancesRequest(project=project_id, zone=zone)
         instances = list(instances_client.list(request))
         assert all(isinstance(i, Instance) for i in instances), [
@@ -38,10 +37,13 @@ class Instances(GceZonalBase):
         return instances_as_dicts
 
     def __get_instance(self, project_id, zone, name) -> Optional[Dict]:
+
         try:
             request = compute_v1.GetInstanceRequest(
                 project=project_id, zone=zone, instance=name
             )
+            instances_client = compute_v1.InstancesClient()
+
             inst = instances_client.get(request)
             isinstance(inst, Instance)
             return self.__instance_to_dict(inst)
@@ -51,7 +53,7 @@ class Instances(GceZonalBase):
 
     def label_all(self, project_id):
         with timing(f"label_all(Instance) in {project_id}"):
-            zones = self._all_zones(project_id)
+            zones = self._all_zones()
             with timing(f" label instances in {len(zones)} zones"):
                 for zone in zones:
                     instances = self.__list_instances(project_id, zone)
@@ -86,7 +88,7 @@ class Instances(GceZonalBase):
 
         name = gcp_object["name"]
         self._batch.add(
-            self._google_client.instances().setLabels(
+            self._google_client().instances().setLabels(
                 project=project_id,
                 zone=zone,
                 instance=name,

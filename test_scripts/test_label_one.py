@@ -13,16 +13,8 @@ a PubSub message, when a resource is created.
 To use this:
 1. Create resources that you want to test, for example a BigQuery Table table-1 in dataset-1.
 2. Run main.py in debug mode.
-3. Then run this file (in project root), test_label_one.py. Error messages will tell you what input it needs, but in summary:
-   
-  * Give it the environment variables
-    - `resource_type` selected from "buckets", "cloudsql", or any other of the 
-        resource types in the test_... functions below
-    - `project` where the resource is deployed
-    - `resource` for the name of the resource (in a BigQuery example, table-1)
-    -  and `parent` for the name of the parent if relevant (in the BigQuery example, dataset-1). 
-        The parent is needed only with BigQuery Tables and PubSub Subscriptions.
-        
+3. Then run this file (in project root), test_label_one.py. Error messages will tell you what input it needs, but
+you can also see Usage below (or run test_label_one.py --help)) for details.
   * The resource that you target must match the data in `sample_data`. For example, an instance must be in zone us-east1-b.
  
 """
@@ -142,6 +134,8 @@ def main():
              - resource for the name of the resource (for example, a BigQuery table called table-1 )
              - parent for the name of the parent if relevant (in the BigQuery example, dataset-1). 
                 The parent is needed only with BigQuery Tables and PubSub Subscriptions.
+            - optional key LOCAL_PORT for the port of the local Iris server
+   
             """
         )
         exit(1)

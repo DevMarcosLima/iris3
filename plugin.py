@@ -26,7 +26,6 @@ class Plugin(object, metaclass=ABCMeta):
     plugins = {}
 
     def __init__(self):
-        self._google_client = discovery.build(*self.discovery_api())
         self.__init_batch_req()
 
     @classmethod
@@ -50,7 +49,10 @@ class Plugin(object, metaclass=ABCMeta):
         """
         return True
 
-    @timed_lru_cache(seconds=600, maxsize=512)
+    def _google_client(self):
+        return discovery.build(*self.discovery_api())
+
+    @timed_lru_cache(seconds=60, maxsize=250)
     def _project_labels(self, project_id) -> typing.Dict:
 
         assert self.__proj_regex.match(
@@ -196,7 +198,7 @@ class Plugin(object, metaclass=ABCMeta):
 
     def __init_batch_req(self):
         self.counter = 0
-        self._batch = self._google_client.new_batch_http_request(
+        self._batch = self._google_client().new_batch_http_request(
             callback=self.__batch_callback
         )
 
