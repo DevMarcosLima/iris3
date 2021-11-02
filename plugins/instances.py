@@ -19,7 +19,7 @@ class Instances(GceZonalBase):
         try:
             machine_type = gcp_object["machineType"]
             ind = machine_type.rfind("/")
-            machine_type = machine_type[ind + 1:]
+            machine_type = machine_type[ind + 1 :]
             return machine_type
         except KeyError as e:
             logging.exception(e)
@@ -67,7 +67,7 @@ class Instances(GceZonalBase):
         try:
             inst = log_data["protoPayload"]["resourceName"]
             ind = inst.rfind("/")
-            inst = inst[ind + 1:]
+            inst = inst[ind + 1 :]
             labels = log_data["resource"]["labels"]["project_id"]
             zone = log_data["resource"]["labels"]["zone"]
             instance = self.__get_instance(labels, zone, inst)
