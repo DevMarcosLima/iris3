@@ -34,13 +34,15 @@ class Instances(GceZonalBase):
         assert all(isinstance(i, Instance) for i in instances), [
             i.__class__ for i in instances
         ]
-        instances_as_dicts: List[Dict] = [   self.__instance_to_dict(i) for i in instances     ]
+        instances_as_dicts: List[Dict] = [self.__instance_to_dict(i) for i in instances]
         return instances_as_dicts
 
-    def __get_instance(self, project_id, zone, name)->Optional[Dict]:
+    def __get_instance(self, project_id, zone, name) -> Optional[Dict]:
         try:
-            request=compute_v1.GetInstanceRequest(project=project_id, zone=zone, instance=name)
-            inst=instances_client.get(request)
+            request = compute_v1.GetInstanceRequest(
+                project=project_id, zone=zone, instance=name
+            )
+            inst = instances_client.get(request)
             isinstance(inst, Instance)
             return self.__instance_to_dict(inst)
         except errors.HttpError as e:
@@ -99,8 +101,8 @@ class Instances(GceZonalBase):
         if self.counter >= self._BATCH_SIZE:
             self.do_batch()
 
-    def __instance_to_dict(self, inst:Instance)->Dict:
-       return  {  # could copy more information into this dict. As-is, we copy only the fields that are later used.
+    def __instance_to_dict(self, inst: Instance) -> Dict:
+        return {  # could copy more information into this dict. As-is, we copy only the fields that are later used.
             "name": inst.name,
             "zone": inst.zone,
             "machineType": inst.machine_type,

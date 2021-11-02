@@ -183,7 +183,7 @@ class Plugin(object, metaclass=ABCMeta):
     def _name_no_separator(self, gcp_object):
         return self.__name(gcp_object, separator=None)
 
-    def __name(self, gcp_object, separator: typing.Optional[str]=None):
+    def __name(self, gcp_object, separator: typing.Optional[str] = None):
         try:
             name = gcp_object["name"]
             if separator:
