@@ -1,11 +1,10 @@
 import logging
 from abc import ABCMeta
 
-import util.gcp_utils
-from gce_base.gce_base import GceBase
-
 from google.cloud import compute_v1
 
+import util.gcp_utils
+from gce_base.gce_base import GceBase
 from util.utils import timed_lru_cache
 
 zones_client = compute_v1.ZonesClient()

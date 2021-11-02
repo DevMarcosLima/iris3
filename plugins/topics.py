@@ -52,13 +52,13 @@ class Topics(Plugin):
         while True:
             result = (
                 self._google_client.projects()
-                .topics()
-                .list(
+                    .topics()
+                    .list(
                     project=f"projects/{project_id}",
                     pageToken=page_token
                     # No filter param availble
                 )
-                .execute()
+                    .execute()
             )
             if "topics" in result:
                 topics += result["topics"]

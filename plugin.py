@@ -81,7 +81,7 @@ class Plugin(object, metaclass=ABCMeta):
         def key(func) -> str:
             iris_pfx = iris_prefix()
             iris_pfx_full = iris_pfx + "_" if iris_pfx else ""
-            return iris_pfx_full + func.__name__[len(func_name_pfx) :]
+            return iris_pfx_full + func.__name__[len(func_name_pfx):]
 
         ret = {key(f): value(f, gcp_object) for f in methods(self, func_name_pfx)}
 
@@ -188,7 +188,7 @@ class Plugin(object, metaclass=ABCMeta):
             name = gcp_object["name"]
             if separator:
                 index = name.rfind(separator)
-                name = name[index + 1 :]
+                name = name[index + 1:]
             return name
         except KeyError as e:
             logging.exception(e)

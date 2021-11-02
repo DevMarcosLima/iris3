@@ -48,7 +48,6 @@ logging.info(
     "env GAE_USE_SOCKETS_HTTPLIB is %s", os.environ.get("GAE_USE_SOCKETS_HTTPLIB")
 )
 
-
 app = flask.Flask(__name__)
 
 Plugin.init()
@@ -134,9 +133,9 @@ def schedule():
         for project_id in configured_projects:
             for _, plugin_ in Plugin.plugins.items():
                 if (
-                    not plugin_.is_labeled_on_creation()
-                    or plugin_.relabel_on_cron()
-                    or config_utils.label_all_on_cron()
+                        not plugin_.is_labeled_on_creation()
+                        or plugin_.relabel_on_cron()
+                        or config_utils.label_all_on_cron()
                 ):
                     pubsub_utils.publish(
                         msg=json.dumps(

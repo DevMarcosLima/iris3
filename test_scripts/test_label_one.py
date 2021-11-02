@@ -22,6 +22,8 @@ To use this:
     - `resource` for the name of the resource (in a BigQuery example, table-1)
     -  and `parent` for the name of the parent if relevant (in the BigQuery example, dataset-1). 
         The parent is needed only with BigQuery Tables and PubSub Subscriptions.
+        
+  * The resource that you target must match the data in `sample_data`. For example, an instance must be in zone us-east1-b.
  
 """
 

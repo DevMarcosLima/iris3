@@ -1,21 +1,17 @@
 import os
 import re
 import uuid
-from pprint import pprint
 from typing import List, Dict, Any
 
-from util import localdev_config
 from google.cloud import resourcemanager_v3
-
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-from google.cloud import resourcemanager_v3
-from util.utils import timed_lru_cache, timing, log_time
+from util import localdev_config
+from util.utils import timed_lru_cache, log_time
 
 projects_client = resourcemanager_v3.ProjectsClient()
 folders_client = resourcemanager_v3.FoldersClient()
-
 
 resource_manager = discovery.build(
     "cloudresourcemanager",
