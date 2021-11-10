@@ -30,9 +30,9 @@ class GceZonalBase(GceBase, metaclass=ABCMeta):
     @lru_cache(maxsize=1)
     def _all_zones(self):
         """
-        Get all available zones.
-        NOTE! If different GCP Prpjects have different zones, this will break.
-       But we assume that the zone list is the same for all as a performance boost
+         Get all available zones.
+         NOTE! If different GCP Prpjects have different zones, this will break.
+        But we assume that the zone list is the same for all as a performance boost
 
         """
         zones_client = compute_v1.ZonesClient()
