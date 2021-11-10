@@ -3,6 +3,7 @@ import pkgutil
 import re
 import typing
 from abc import ABCMeta, abstractmethod
+from functools import lru_cache
 
 from googleapiclient import discovery
 from googleapiclient import errors
@@ -49,6 +50,7 @@ class Plugin(object, metaclass=ABCMeta):
         """
         return True
 
+    @lru_cache(maxsize=1)
     def _google_client(self):
         return discovery.build(*self.discovery_api())
 

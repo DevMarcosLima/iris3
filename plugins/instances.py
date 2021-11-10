@@ -10,6 +10,8 @@ from util import gcp_utils
 from util.utils import log_time
 from util.utils import timing
 
+instances_client = compute_v1.InstancesClient()
+
 
 class Instances(GceZonalBase):
     def _gcp_instance_type(self, gcp_object: dict):
@@ -27,7 +29,6 @@ class Instances(GceZonalBase):
         return ["compute.instances.insert", "compute.instances.start"]
 
     def __list_instances(self, project_id: str, zone: str):
-        instances_client = compute_v1.InstancesClient()
         request = compute_v1.ListInstancesRequest(project=project_id, zone=zone)
         instances = list(instances_client.list(request))
         assert all(isinstance(i, Instance) for i in instances), [
@@ -42,7 +43,6 @@ class Instances(GceZonalBase):
             request = compute_v1.GetInstanceRequest(
                 project=project_id, zone=zone, instance=name
             )
-            instances_client = compute_v1.InstancesClient()
 
             inst = instances_client.get(request)
             isinstance(inst, Instance)
