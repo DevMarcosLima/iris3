@@ -28,6 +28,7 @@ iris_prefix: iris
 specific_prefixes: {}
 
 # Example:
+# x002
 # specific_prefixes:
 #   Buckets:
 #   Bigquery: ""
@@ -49,7 +50,7 @@ from_project: True
 # If it isTrue, then all resource types will be labeled on every Cloud Scheduler cycle.
 #   This is useful for labeling existing resources when you first launch Iris3.
 
-label_all_on_cron: False
+label_all_on_cron: True
 
 # Optionally change this token before first deployment for added security in
 # communication between PubSub and the Iris App on App Engine.

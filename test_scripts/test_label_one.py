@@ -65,6 +65,11 @@ def test_buckets():
 
     label_one(__project(), __resource_name(), Buckets().method_names()[0])
 
+# x003
+def test_cloudrun():
+    from plugins.cloudrun import CloudRun
+
+    label_one(__project(), __resource_name(), CloudRun().method_names()[0])
 
 def test_cloudsql():
     from plugins.cloudsql import Cloudsql

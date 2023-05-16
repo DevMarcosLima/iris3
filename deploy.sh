@@ -26,9 +26,9 @@ if [[ "$BASH_VERSION" == 3. ]]; then
 fi
 
 export PYTHONPATH="."
-python3 ./util/check_python_version.py
+python ./util/check_python_version.py
 
-pip3 install -r requirements.txt
+pip install -r requirements.txt
 
 START=$(date "+%s")
 

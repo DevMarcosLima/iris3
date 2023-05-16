@@ -45,3 +45,9 @@ includedPermissions:
   - storage.buckets.get
   - storage.buckets.list
   - storage.buckets.update
+  # CLOUD RUN
+  - run.services.get
+  - run.services.list
+  - run.services.update
+  - run.services.setIamPolicy
+  - run.services.getIamPolicy

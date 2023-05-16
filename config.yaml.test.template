@@ -10,6 +10,6 @@ iris_prefix: ${RUN_ID}
 specific_prefixes:
   Buckets: gcs${RUN_ID}
 from_project: True
-label_all_on_cron: False
+label_all_on_cron: True
 # We generate a random token per-test-run as an additional isolation measure
 pubsub_verification_token: ${PUBSUB_TEST_TOKEN}

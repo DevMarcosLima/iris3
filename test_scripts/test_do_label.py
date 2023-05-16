@@ -15,7 +15,9 @@ To use it.
 1. Run main.py in debug mode
 2. Then run this file (in project root). See Usage below (or run test_do_label.py --help)
 """
+# X001
 PLUGINS = [
+    "CloudRun",
     "Buckets",
     "Bigquery",
     "Cloudsql",
