@@ -92,8 +92,51 @@ gcloud projects describe "$PROJECT_ID" || {
 echo "Project ID $PROJECT_ID"
 gcloud config set project "$PROJECT_ID"
 
-if [[ "$deploy_org" == "true" ]]; then
-  ./scripts/_deploy-org.sh
+GAE_SVC=$(grep "service:" app.yaml | awk '{print $2}')
+# This dependson the  the export PYTHON_PATH="." above.
+PUBSUB_VERIFICATION_TOKEN=$(python3 ./util/print_pubsub_token.py)
+LABEL_ONE_SUBSCRIPTION_ENDPOINT="https://${GAE_SVC}-dot-${PROJECT_ID}.${GAE_REGION_ABBREV}.r.appspot.com/label_one?token=${PUBSUB_VERIFICATION_TOKEN}"
+DO_LABEL_SUBSCRIPTION_ENDPOINT="https://${GAE_SVC}-dot-${PROJECT_ID}.${GAE_REGION_ABBREV}.r.appspot.com/do_label?token=${PUBSUB_VERIFICATION_TOKEN}"
+
+declare -A enabled_services
+while read -r svc _; do
+  # We check that a key is in the associative array, treating it as a set.
+  # The value (which is always "yes") does not matter, just that
+  enabled_services["$svc"]=yes
+done < <(gcloud services list --format="value(config.name)")
+
+
+required_svcs=(
+  cloudscheduler.googleapis.com
+  cloudresourcemanager.googleapis.com
+  pubsub.googleapis.com
+  compute.googleapis.com
+  bigtable.googleapis.com
+  bigtableadmin.googleapis.com
+  storage-component.googleapis.com
+  sql-component.googleapis.com
+  sqladmin.googleapis.com
+)
+for svc in "${required_svcs[@]}"; do
+  if ! [ ${enabled_services["$svc"]+_} ]; then
+    gcloud services enable "$svc"
+  fi
+done
+
+# Get organization id for this project
+ORGID=$(curl -X POST -H "Authorization: Bearer \"$(gcloud auth print-access-token)\"" \
+  -H "Content-Type: application/json; charset=utf-8" \
+  https://cloudresourcemanager.googleapis.com/v1/projects/"${PROJECT_ID}":getAncestry | grep -A 1 organization |
+  tail -n 1 | tr -d ' ' | cut -d'"' -f4)
+
+# Create App Engine app
+gcloud app describe >&/dev/null || gcloud app create --region=$REGION
+
+# Create custom role to run iris
+if gcloud iam roles describe "$ROLEID" --organization "$ORGID"; then
+  gcloud iam roles update -q "$ROLEID" --organization "$ORGID" --file roles.yaml
+else
+  gcloud iam roles create "$ROLEID" -q --organization "$ORGID" --file roles.yaml
 fi
 
 if [[ "$deploy_proj" == "true" ]]; then
